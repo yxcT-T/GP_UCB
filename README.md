@@ -1,7 +1,7 @@
 # GP-UCB
 Implement some experiments on GP-UCB[1].
 
-##Experiments
+## Experiments
 ### Naive sin + cos
 1. x  range(-3, 3, 0.25)
 2. y  range(-3, 3, 0.25)
@@ -17,12 +17,11 @@ Implement some experiments on GP-UCB[1].
 2. max_depth     range(1, 10, 1)
 
 ## Some global variables
-
-### THREAD_NUM
+1. THREAD_NUM
 The number of threads
-### DATA_PATH
+2. DATA_PATH
 The path of [dataset](http://archive.ics.uci.edu/ml/datasets/Covertype).
 
-##Reference
+## Reference
 1.[Srinivas, Niranjan, et al. "Gaussian process optimization in the bandit setting: No regret and experimental design." arXiv preprint arXiv:0912.3995 (2009).](https://arxiv.org/pdf/0912.3995.pdf)
 
