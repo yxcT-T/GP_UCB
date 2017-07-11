@@ -16,7 +16,7 @@ THREAD_NUM = 15
 
 class GPUCB(object):
 
-    def __init__(self, meshgrid, environment, beta=100.):
+    def __init__(self, meshgrid, environment, beta=10):
         self.meshgrid = np.array(meshgrid)
         self.environment = environment
         self.beta = beta
@@ -28,6 +28,7 @@ class GPUCB(object):
         self.T = []
 
     def argmax_ucb(self):
+        print sum(self.mu), sum(self.sigma)
         return np.argmax(self.mu + self.sigma * np.sqrt(self.beta))
 
     def learn(self):
@@ -129,6 +130,16 @@ class DummyEnvironment(object):
             threads.append(td)
         for td in threads:
             td.join()
+        accuracy_sum = 0.0
+        accuracy_cnt = 0
+        for i in self.x:
+            for j in self.y:
+                accuracy_sum += self.table[(i, j)]
+                accuracy_cnt += 1
+        mean = accuracy_sum / accuracy_cnt
+        for i in self.x:
+            for j in self.y:
+                self.table[(i, j)] -= mean
         self.table_array = []
         for i in self.y:
             line = []
@@ -167,6 +178,16 @@ class DummyEnvironment(object):
             threads.append(td)
         for td in threads:
             td.join()
+        accuracy_sum = 0.0
+        accuracy_cnt = 0
+        for i in self.x:
+            for j in self.y:
+                accuracy_sum += self.table[(i, j)]
+                accuracy_cnt += 1
+        mean = accuracy_sum / accuracy_cnt
+        for i in self.x:
+            for j in self.y:
+                self.table[(i, j)] -= mean
         self.table_array = []
         for i in self.y:
             line = []
@@ -201,6 +222,6 @@ if __name__ == '__main__':
     y = np.arange(1, 15, 1)
     env = DummyEnvironment('random forest', (x, y))
     agent = GPUCB(np.meshgrid(x, y), env)
-    for i in range(20):
+    for i in range(100):
         agent.learn()
         agent.plot()
