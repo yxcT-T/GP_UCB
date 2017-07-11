@@ -129,11 +129,18 @@ class DummyEnvironment(object):
             threads.append(td)
         for td in threads:
             td.join()
+        accuracy_sum = 0.0
+        accuracy_cnt = 0
+        for i in self.x:
+            for j in self.y:
+                accuracy_sum += self.table[(i, j)]
+                accuracy_cnt += 1
+        mean = accuracy_sum / accuracy_cnt
         self.table_array = []
         for i in self.y:
             line = []
             for j in self.x:
-                line.append(self.table[(j, i)])
+                line.append(self.table[(j, i)] - mean)
             self.table_array.append(line)
         self.table_array = np.array(self.table_array)
 
@@ -167,11 +174,18 @@ class DummyEnvironment(object):
             threads.append(td)
         for td in threads:
             td.join()
+        accuracy_sum = 0.0
+        accuracy_cnt = 0
+        for i in self.x:
+            for j in self.y:
+                accuracy_sum += self.table[(i, j)]
+                accuracy_cnt += 1
+        mean = accuracy_sum / accuracy_cnt
         self.table_array = []
         for i in self.y:
             line = []
             for j in self.x:
-                line.append(self.table[(j, i)])
+                line.append(self.table[(j, i)] - mean)
             self.table_array.append(line)
         self.table_array = np.array(self.table_array)
 
@@ -201,6 +215,6 @@ if __name__ == '__main__':
     y = np.arange(1, 15, 1)
     env = DummyEnvironment('random forest', (x, y))
     agent = GPUCB(np.meshgrid(x, y), env)
-    for i in range(20):
+    for i in range(100):
         agent.learn()
         agent.plot()
