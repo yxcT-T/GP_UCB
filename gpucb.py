@@ -7,10 +7,11 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 import sys
 from random import randint
 import threading
+from IPython import embed
 
 
 DATA_PATH = '../data/covtype.data'
-THREAD_NUM = 4
+THREAD_NUM = 15
 
 
 class GPUCB(object):
@@ -75,9 +76,15 @@ class DummyEnvironment(object):
         if self.experiment == 'naive':
             return np.sin(x[0]) + np.cos(x[1])
         elif self.experiment == 'random forest':
-            return self.table[(x[0], x[1])]
+            if type(x[0]) is not np.ndarray:
+                return self.table[(x[0], x[1])]
+            else:
+                return self.table_array
         elif self.experiment == 'gbdt':
-            return self.table[(x[0], x[1])]
+            if type(x[0]) is not np.ndarray:
+                return self.table[(x[0], x[1])]
+            else:
+                return self.table_array
         else:
             print 'No such experiment!'
             sys.exit(0)
@@ -122,6 +129,13 @@ class DummyEnvironment(object):
             threads.append(td)
         for td in threads:
             td.join()
+        self.table_array = []
+        for i in self.y:
+            line = []
+            for j in self.x:
+                line.append(self.table[(j, i)])
+            self.table_array.append(line)
+        self.table_array = np.array(self.table_array)
 
     def multithread_gbdt(self, thread_id):
         for i in self.x:
@@ -153,6 +167,13 @@ class DummyEnvironment(object):
             threads.append(td)
         for td in threads:
             td.join()
+        self.table_array = []
+        for i in self.y:
+            line = []
+            for j in self.x:
+                line.append(self.table[(j, i)])
+            self.table_array.append(line)
+        self.table_array = np.array(self.table_array)
 
     def load_data(self):
         '''
@@ -176,9 +197,9 @@ class DummyEnvironment(object):
 
 
 if __name__ == '__main__':
-    x = np.arange(-3, 3, 0.25)
-    y = np.arange(-3, 3, 0.25)
-    env = DummyEnvironment('naive', (x, y))
+    x = np.arange(50, 250, 10)
+    y = np.arange(1, 15, 1)
+    env = DummyEnvironment('random forest', (x, y))
     agent = GPUCB(np.meshgrid(x, y), env)
     for i in range(20):
         agent.learn()
