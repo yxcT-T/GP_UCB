@@ -16,7 +16,7 @@ THREAD_NUM = 15
 
 class GPUCB(object):
 
-    def __init__(self, meshgrid, environment, beta=100.):
+    def __init__(self, meshgrid, environment, beta=10):
         self.meshgrid = np.array(meshgrid)
         self.environment = environment
         self.beta = beta
@@ -28,6 +28,7 @@ class GPUCB(object):
         self.T = []
 
     def argmax_ucb(self):
+        print sum(self.mu), sum(self.sigma)
         return np.argmax(self.mu + self.sigma * np.sqrt(self.beta))
 
     def learn(self):
@@ -136,11 +137,14 @@ class DummyEnvironment(object):
                 accuracy_sum += self.table[(i, j)]
                 accuracy_cnt += 1
         mean = accuracy_sum / accuracy_cnt
+        for i in self.x:
+            for j in self.y:
+                self.table[(i, j)] -= mean
         self.table_array = []
         for i in self.y:
             line = []
             for j in self.x:
-                line.append(self.table[(j, i)] - mean)
+                line.append(self.table[(j, i)])
             self.table_array.append(line)
         self.table_array = np.array(self.table_array)
 
@@ -181,11 +185,14 @@ class DummyEnvironment(object):
                 accuracy_sum += self.table[(i, j)]
                 accuracy_cnt += 1
         mean = accuracy_sum / accuracy_cnt
+        for i in self.x:
+            for j in self.y:
+                self.table[(i, j)] -= mean
         self.table_array = []
         for i in self.y:
             line = []
             for j in self.x:
-                line.append(self.table[(j, i)] - mean)
+                line.append(self.table[(j, i)])
             self.table_array.append(line)
         self.table_array = np.array(self.table_array)
 
