@@ -1,7 +1,7 @@
 #########################################################################
 # File Name: run.sh
 # Author: yanxuecan
-# Mail: yanxuecan.iron@bytedance.com
+# Mail: yxcyanxuecan@163.com
 # Created Time: Mon Jul 10 17:50:30 2017
 #########################################################################
 #!/bin/bash
